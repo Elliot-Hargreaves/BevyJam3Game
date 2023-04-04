@@ -1,5 +1,6 @@
 mod actions;
 mod audio;
+mod creature;
 mod loading;
 mod menu;
 mod player;

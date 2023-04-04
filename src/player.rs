@@ -1,6 +1,5 @@
 use crate::actions::Actions;
 use crate::loading::TextureAssets;
-use crate::GameState;
 use bevy::prelude::*;
 
 pub struct PlayerPlugin;
@@ -11,13 +10,13 @@ pub struct Player;
 /// This plugin handles player related stuff like movement
 /// Player logic is only active during the State `GameState::Playing`
 impl Plugin for PlayerPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_system(spawn_player.in_schedule(OnEnter(GameState::Playing)))
-            .add_system(move_player.in_set(OnUpdate(GameState::Playing)));
+    fn build(&self, _app: &mut App) {
+        // app.add_system(spawn_player.in_schedule(OnEnter(GameState::Playing)))
+        //     .add_system(move_player.in_set(OnUpdate(GameState::Playing)));
     }
 }
 
-fn spawn_player(mut commands: Commands, textures: Res<TextureAssets>) {
+fn _spawn_player(mut commands: Commands, textures: Res<TextureAssets>) {
     commands
         .spawn(SpriteBundle {
             texture: textures.texture_bevy.clone(),
@@ -27,7 +26,7 @@ fn spawn_player(mut commands: Commands, textures: Res<TextureAssets>) {
         .insert(Player);
 }
 
-fn move_player(
+fn _move_player(
     time: Res<Time>,
     actions: Res<Actions>,
     mut player_query: Query<&mut Transform, With<Player>>,
