@@ -33,6 +33,7 @@ fn move_player(
     mut player_query: Query<&mut Transform, With<Player>>,
 ) {
     if actions.player_movement.is_none() {
+        random_dice();
         return;
     }
     let speed = 150.;
@@ -44,4 +45,9 @@ fn move_player(
     for mut player_transform in &mut player_query {
         player_transform.translation += movement;
     }
+}
+
+fn random_dice(){
+    let roll = rand::random::<u32>() %7;
+    println!("{}", roll);
 }
