@@ -10,11 +10,10 @@ pub struct MenuPlugin;
 impl Plugin for MenuPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<ButtonColors>()
-            .add_system(setup_menu.in_schedule(OnEnter(GameState::Menu)))
-            .add_system(click_play_button.in_set(OnUpdate(GameState::Menu)))
-            .add_system(cleanup_menu.in_schedule(OnExit(GameState::Menu)))
-            .add_system(update_health.in_set(OnUpdate(GameState::Menu)))
-            .add_system(update_health_bar.in_set(OnUpdate(GameState::Menu)));
+            .add_system(setup_menu.in_schedule(OnEnter(GameState::Fight)))
+            .add_system(click_play_button.in_set(OnUpdate(GameState::Fight)))
+            .add_system(update_health.in_set(OnUpdate(GameState::Fight)))
+            .add_system(update_health_bar.in_set(OnUpdate(GameState::Fight)));
     }
 }
 
@@ -193,7 +192,8 @@ fn setup_menu(
     commands
         .spawn(SpriteBundle {
             texture: texture_assets.gargoylemon.clone(),
-            transform: Transform::from_translation(Vec3::new(-80.0, 0.0, 0.1)),
+            transform: Transform::from_translation(Vec3::new(-200.0, 50.0, 0.1))
+                .with_scale(Vec3::new(-1., 1., 1.)),
             visibility: Visibility::Visible,
             ..default()
         })
@@ -243,8 +243,4 @@ fn update_health_bar(
     let health_percentage =
         (creature.get_health() as f32 / creature.get_max_health() as f32) * 100.0;
     healthbar_style.size.width = Val::Percent(health_percentage);
-}
-
-fn cleanup_menu(mut commands: Commands, button: Query<Entity, With<Button>>) {
-    commands.entity(button.single()).despawn_recursive();
 }

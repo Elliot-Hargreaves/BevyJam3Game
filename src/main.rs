@@ -11,12 +11,18 @@ use winit::window::Icon;
 
 fn main() {
     App::new()
-        .insert_resource(Msaa::Off)
+        .insert_resource(Msaa::Sample8)
         .insert_resource(ClearColor(Color::rgb(0.4, 0.4, 0.4)))
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
                 title: "Bevy game".to_string(), // ToDo
-                resolution: (800., 600.).into(),
+                resolution: (1024., 720.).into(),
+                resizable: false,
+                // resize_constraints: WindowResizeConstraints {
+                //     min_width: 1024.,
+                //     min_height: 720.,
+                //     ..default()
+                // },
                 canvas: Some("#bevy".to_owned()),
                 ..default()
             }),

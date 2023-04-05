@@ -27,7 +27,7 @@ enum GameState {
     // During this State the actual game logic is executed
     Playing,
     // Here the menu is drawn and waiting for player interaction
-    Menu,
+    Fight,
 }
 
 pub struct GamePlugin;
