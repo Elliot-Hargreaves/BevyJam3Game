@@ -1,4 +1,4 @@
-use bevy::prelude::Component;
+use bevy::prelude::{Component, Resource};
 use uuid::Uuid;
 
 pub mod constants;
@@ -6,7 +6,8 @@ pub mod constants;
 #[derive(Component)]
 pub struct Creature {
     health: u32,
-    _name: String,
+    max_health: u32,
+    name: String,
     tag: Uuid,
 }
 
@@ -19,15 +20,14 @@ impl Creature {
     pub fn new(name: String) -> Self {
         Self {
             health: 100,
-            _name: name,
+            max_health: 100,
+            name,
             tag: Uuid::new_v4(),
         }
     }
 
     pub fn get_creature_tag(&self) -> CreatureTag {
-        CreatureTag {
-            _tag: self.tag,
-        }
+        CreatureTag { _tag: self.tag }
     }
 
     pub fn take_damage(&mut self, damage_points: u32) {
@@ -44,5 +44,13 @@ impl Creature {
 
     pub fn get_health(&self) -> u32 {
         self.health
+    }
+
+    pub fn get_max_health(&self) -> u32 {
+        self.max_health
+    }
+
+    pub fn get_name(&self) -> &str {
+        &self.name
     }
 }

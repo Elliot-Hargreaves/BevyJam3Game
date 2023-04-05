@@ -48,3 +48,8 @@ impl Plugin for GamePlugin {
         }
     }
 }
+
+pub fn random_dice() {
+    let roll = rand::random::<u32>() % 7;
+    println!("{}", roll);
+}
