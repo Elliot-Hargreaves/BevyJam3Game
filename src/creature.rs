@@ -11,7 +11,7 @@ pub struct Creature {
     tag: Uuid,
 }
 
-#[derive(Component)]
+#[derive(Component, Eq, PartialEq)]
 pub struct CreatureTag {
     _tag: Uuid,
 }

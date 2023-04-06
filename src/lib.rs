@@ -1,14 +1,14 @@
 mod actions;
 mod audio;
 mod creature;
+mod fight_stage;
 mod loading;
-mod menu;
 mod player;
 
 use crate::actions::ActionsPlugin;
 use crate::audio::InternalAudioPlugin;
+use crate::fight_stage::MenuPlugin;
 use crate::loading::LoadingPlugin;
-use crate::menu::MenuPlugin;
 use crate::player::PlayerPlugin;
 
 use bevy::app::App;

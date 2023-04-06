@@ -1,4 +1,4 @@
-use crate::creature::Creature;
+use crate::creature::{Creature, CreatureTag};
 use crate::loading::{FontAssets, TextureAssets};
 use crate::GameState;
 use bevy::prelude::*;
@@ -35,6 +35,85 @@ impl Default for ButtonColors {
 #[derive(Component)]
 struct HealthBar {}
 
+fn create_creature_plaque(
+    parent: &mut ChildBuilder,
+    plaque_margins: UiRect,
+    font: Handle<Font>,
+    associated_creature: Creature,
+) {
+    let creature_tag = associated_creature.get_creature_tag();
+    parent
+        .spawn(NodeBundle {
+            style: Style {
+                size: Size::new(Val::Px(200.0), Val::Auto),
+                margin: plaque_margins,
+                border: UiRect::all(Val::Px(10.0)),
+                flex_wrap: FlexWrap::Wrap,
+                ..default()
+            },
+            background_color: BackgroundColor::from(Color::Rgba {
+                red: 0.5,
+                green: 0.5,
+                blue: 0.5,
+                alpha: 0.9,
+            }),
+
+            ..default()
+        })
+        .with_children(|parent| {
+            let creature_status_text_style = TextStyle {
+                font: font,
+                font_size: 20.0,
+                color: Color::rgb(0.1, 0.1, 0.1),
+            };
+            parent
+                .spawn(
+                    TextBundle::from_sections(vec![
+                        // Name
+                        TextSection {
+                            value: String::new(),
+                            style: creature_status_text_style.clone(),
+                        },
+                        // health
+                        TextSection {
+                            value: String::new(),
+                            style: creature_status_text_style,
+                        },
+                    ])
+                    .with_style(Style {
+                        flex_wrap: FlexWrap::Wrap,
+                        ..default()
+                    }),
+                )
+                .insert(associated_creature);
+
+            parent
+                .spawn(NodeBundle {
+                    style: Style {
+                        size: Size::new(Val::Percent(100.0), Val::Px(20.0)),
+                        margin: UiRect::top(Val::Px(5.0)),
+                        flex_wrap: FlexWrap::Wrap,
+                        ..default()
+                    },
+                    background_color: BackgroundColor::from(Color::rgb_u8(99, 10, 10)),
+                    ..default()
+                })
+                .with_children(|parent| {
+                    parent
+                        .spawn(NodeBundle {
+                            style: Style {
+                                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                                ..default()
+                            },
+                            background_color: BackgroundColor::from(Color::rgb_u8(198, 33, 33)),
+                            ..default()
+                        })
+                        .insert(creature_tag)
+                        .insert(HealthBar {});
+                });
+        });
+}
+
 fn setup_menu(
     mut commands: Commands,
     font_assets: Res<FontAssets>,
@@ -47,6 +126,7 @@ fn setup_menu(
     button_position.top = Val::Auto;
 
     let creature = Creature::new("Jeff".to_string());
+    let opponent_creature = Creature::new("Bilbo".to_string());
     let creature_tag = creature.get_creature_tag();
 
     commands
@@ -69,88 +149,28 @@ fn setup_menu(
                     ..default()
                 })
                 .with_children(|parent| {
-                    // Player creature plaque
-                    parent
-                        .spawn(NodeBundle {
-                            style: Style {
-                                size: Size::new(Val::Px(200.0), Val::Auto),
-                                margin: UiRect {
-                                    top: Val::Auto,
-                                    right: Val::Auto,
-                                    left: Val::Px(20.0),
-                                    bottom: Val::Px(20.0),
-                                },
-                                border: UiRect::all(Val::Px(10.0)),
-                                flex_wrap: FlexWrap::Wrap,
-                                ..default()
-                            },
-                            background_color: BackgroundColor::from(Color::Rgba {
-                                red: 0.5,
-                                green: 0.5,
-                                blue: 0.5,
-                                alpha: 0.9,
-                            }),
-
-                            ..default()
-                        })
-                        .with_children(|parent| {
-                            let creature_status_text_style = TextStyle {
-                                font: font_assets.fira_sans.clone(),
-                                font_size: 20.0,
-                                color: Color::rgb(0.1, 0.1, 0.1),
-                            };
-                            parent
-                                .spawn(
-                                    TextBundle::from_sections(vec![
-                                        // Name
-                                        TextSection {
-                                            value: String::new(),
-                                            style: creature_status_text_style.clone(),
-                                        },
-                                        // health
-                                        TextSection {
-                                            value: String::new(),
-                                            style: creature_status_text_style,
-                                        },
-                                    ])
-                                    .with_style(Style {
-                                        flex_wrap: FlexWrap::Wrap,
-                                        ..default()
-                                    }),
-                                )
-                                .insert(creature);
-
-                            parent
-                                .spawn(NodeBundle {
-                                    style: Style {
-                                        size: Size::new(Val::Percent(100.0), Val::Px(20.0)),
-                                        margin: UiRect::top(Val::Px(5.0)),
-                                        flex_wrap: FlexWrap::Wrap,
-                                        ..default()
-                                    },
-                                    background_color: BackgroundColor::from(Color::rgb_u8(
-                                        99, 10, 10,
-                                    )),
-                                    ..default()
-                                })
-                                .with_children(|parent| {
-                                    parent
-                                        .spawn(NodeBundle {
-                                            style: Style {
-                                                size: Size::new(
-                                                    Val::Percent(100.0),
-                                                    Val::Percent(100.0),
-                                                ),
-                                                ..default()
-                                            },
-                                            background_color: BackgroundColor::from(Color::rgb_u8(
-                                                198, 33, 33,
-                                            )),
-                                            ..default()
-                                        })
-                                        .insert(HealthBar {});
-                                });
-                        });
+                    create_creature_plaque(
+                        parent,
+                        UiRect {
+                            top: Val::Auto,
+                            right: Val::Auto,
+                            left: Val::Px(20.0),
+                            bottom: Val::Px(20.0),
+                        },
+                        font_assets.fira_sans.clone(),
+                        creature,
+                    );
+                    create_creature_plaque(
+                        parent,
+                        UiRect {
+                            top: Val::Auto,
+                            left: Val::Auto,
+                            right: Val::Px(20.0),
+                            bottom: Val::Px(20.0),
+                        },
+                        font_assets.fira_sans.clone(),
+                        opponent_creature,
+                    );
                 });
 
             // Button area
@@ -211,11 +231,11 @@ fn click_play_button(
     for (interaction, mut color) in &mut interaction_query {
         match *interaction {
             Interaction::Clicked => {
-                let roll = rand::random::<u32>() % 7 + 1;
-                warn!("Dealt a _massive_ {roll} damage!");
-                creatures
-                    .iter_mut()
-                    .for_each(|mut creature| creature.take_damage(roll));
+                creatures.iter_mut().for_each(|mut creature| {
+                    let roll = rand::random::<u32>() % 7 + 1;
+                    warn!("Dealt a _massive_ {roll} damage!");
+                    creature.take_damage(roll)
+                });
             }
             Interaction::Hovered => {
                 *color = button_colors.hovered.into();
@@ -235,12 +255,17 @@ fn update_health(mut health_text_query: Query<(&mut Text, &Creature), With<Creat
 }
 
 fn update_health_bar(
-    mut healthbar_query: Query<(&mut Style, &HealthBar)>,
+    mut healthbar_query: Query<(&mut Style, &HealthBar, &CreatureTag)>,
     creature_query: Query<&Creature>,
 ) {
-    let creature = creature_query.single();
-    let (mut healthbar_style, _) = healthbar_query.single_mut();
-    let health_percentage =
-        (creature.get_health() as f32 / creature.get_max_health() as f32) * 100.0;
-    healthbar_style.size.width = Val::Percent(health_percentage);
+    for (mut style, _, creature_tag) in healthbar_query.iter_mut() {
+        let creature = creature_query
+            .iter()
+            .filter(|creature| &creature.get_creature_tag() == creature_tag)
+            .next()
+            .expect("Healthbar doesn't have associated creature!");
+        let health_percentage =
+            (creature.get_health() as f32 / creature.get_max_health() as f32) * 100.0;
+        style.size.width = Val::Percent(health_percentage);
+    }
 }
