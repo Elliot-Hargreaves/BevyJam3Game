@@ -232,6 +232,7 @@ fn setup_menu(
         .insert(opponent_creature_tag);
 }
 
+#[allow(clippy::type_complexity)]
 fn click_play_button(
     button_colors: Res<ButtonColors>,
     mut interaction_query: Query<
