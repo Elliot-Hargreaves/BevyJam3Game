@@ -22,14 +22,14 @@ impl Plugin for InternalAudioPlugin {
 #[derive(Resource)]
 struct FlyingAudio(Handle<AudioInstance>);
 
-fn start_audio(mut commands: Commands, audio_assets: Res<AudioAssets>, audio: Res<Audio>) {
-    audio.pause();
-    let handle = audio
-        .play(audio_assets.flying.clone())
-        .looped()
-        .with_volume(0.3)
-        .handle();
-    commands.insert_resource(FlyingAudio(handle));
+fn start_audio(_commands: Commands, _audio_assets: Res<AudioAssets>, _audio: Res<Audio>) {
+    // audio.pause();
+    // let handle = audio
+    //     .play(audio_assets.flying.clone())
+    //     .looped()
+    //     .with_volume(0.3)
+    //     .handle();
+    // commands.insert_resource(FlyingAudio(handle));
 }
 
 fn control_flying_sound(
