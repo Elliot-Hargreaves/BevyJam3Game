@@ -1,7 +1,10 @@
 use bevy::prelude::Component;
+use std::f32::consts::PI;
 use uuid::Uuid;
 
 pub mod constants;
+
+pub const WIGGLE_MAX_ANGLE: f32 = (10.0 / 360.) * (2.0 * PI);
 
 #[derive(Component)]
 pub struct Creature {
@@ -9,9 +12,10 @@ pub struct Creature {
     max_health: u32,
     name: String,
     tag: Uuid,
+    wiggle_period: f32,
 }
 
-#[derive(Component)]
+#[derive(Component, Eq, PartialEq)]
 pub struct CreatureTag {
     _tag: Uuid,
 }
@@ -23,6 +27,7 @@ impl Creature {
             max_health: 100,
             name,
             tag: Uuid::new_v4(),
+            wiggle_period: f32::max(rand::random::<f32>(), 0.5) + 0.2,
         }
     }
 
@@ -52,5 +57,13 @@ impl Creature {
 
     pub fn get_name(&self) -> &str {
         &self.name
+    }
+
+    pub fn get_wiggle_period(&self) -> f32 {
+        self.wiggle_period
+    }
+
+    pub fn set_wiggle_period(&mut self, new_wiggle_period: f32) {
+        self.wiggle_period = new_wiggle_period
     }
 }
